@@ -14,29 +14,33 @@
     html, body {
         margin: 0;
         padding: 0;
-        width: 100%;
-        height: 100%;
-        min-height: 100vh;
 
-        /* Safe area de iOS para notch/barra superior */
+        /* Ajuste completo al viewport de iOS */
+        width: 100%;
+        height: 100vh; /* ocupa toda la pantalla visible */
+        box-sizing: border-box;
+
+        /* Safe area para notch y barra inferior */
         padding-top: env(safe-area-inset-top);
         padding-bottom: env(safe-area-inset-bottom);
 
         background-color: #000;
         background-image: url("static/dandyfondo2.PNG");
         background-repeat: no-repeat;
+        /* Centramos la imagen teniendo en cuenta el safe area */
         background-position: center center;
-        background-size: cover; /* ajusta la imagen al tamaño de pantalla sin recortar */
-        overflow: hidden;
+        background-size: contain; /* evita recorte, puede dejar barras negras */
     }
+
+    /* Si quieres que siempre cubra toda la pantalla sin recorte, usa cover: */
+    /*
+    html, body {
+        background-size: cover;
+        background-position: center calc(50% + env(safe-area-inset-top)/2);
+    }
+    */
 </style>
 </head>
 <body>
-<script>
-    // Scroll pequeño al cargar para ocultar barra Safari
-    window.addEventListener('load', () => {
-        setTimeout(() => { window.scrollTo(0, 1); }, 100);
-    });
-</script>
 </body>
 </html>
