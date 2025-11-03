@@ -1,48 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>DH Dandy Hats</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>DH Dandy Hats</title>
 
-    <!-- Iconos -->
-    <link rel="icon" type="image/webp" href="static/dhlogo.webp">
-    <link rel="apple-touch-icon" type="image/webp" href="static/dhlogo.webp">
+<link rel="icon" type="image/webp" href="static/dhlogo.webp">
+<link rel="apple-touch-icon" type="image/webp" href="static/dhlogo.webp">
 
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden; /* evita scroll */
-            background-color: #000;
-        }
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
 
-        /* Fondo fijo con soporte notch y home indicator */
-        body::before {
-            content: "";
-            position: fixed;
-            top: env(safe-area-inset-top);
-            left: env(safe-area-inset-left);
-            right: env(safe-area-inset-right);
-            bottom: env(safe-area-inset-bottom);
-            background-image: url("static/dandyfondo2.PNG");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover; /* llena toda la pantalla */
-            z-index: -1; /* detrás de cualquier contenido */
-        }
-    </style>
+        /* Safe area de iOS para notch/barra superior */
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+
+        background-color: #000;
+        background-image: url("static/dandyfondo2.PNG");
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover; /* ajusta la imagen al tamaño de pantalla sin recortar */
+        overflow: hidden;
+    }
+</style>
 </head>
 <body>
-    <script>
-        // Oculta la barra Safari al cargar en iOS
-        window.addEventListener('load', () => {
-            setTimeout(() => { window.scrollTo(0, 1); }, 100);
-        });
-    </script>
+<script>
+    // Scroll pequeño al cargar para ocultar barra Safari
+    window.addEventListener('load', () => {
+        setTimeout(() => { window.scrollTo(0, 1); }, 100);
+    });
+</script>
 </body>
 </html>
