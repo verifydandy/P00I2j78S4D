@@ -12,17 +12,16 @@
     <link rel="apple-touch-icon" type="image/webp" href="static/dhlogo.webp">
 
     <style>
-        /* Reset básico */
         html, body {
             margin: 0;
             padding: 0;
-            height: 100vh; /* cubrir toda la pantalla */
+            height: 100vh;
             width: 100vw;
+            overflow: hidden; /* evita scroll */
             background-color: #000;
-            overflow: hidden; /* opcional: evita scroll innecesario */
         }
 
-        /* Contenedor del fondo */
+        /* Fondo fijo con soporte notch y home indicator */
         body::before {
             content: "";
             position: fixed;
@@ -33,29 +32,14 @@
             background-image: url("static/dandyfondo2.PNG");
             background-repeat: no-repeat;
             background-position: center;
-            background-size: cover; /* ajusta para cubrir toda la pantalla */
-            z-index: -1; /* detrás del contenido */
-        }
-
-        /* Contenido centrado opcional */
-        .contenido {
-            position: relative;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-family: sans-serif;
+            background-size: cover; /* llena toda la pantalla */
+            z-index: -1; /* detrás de cualquier contenido */
         }
     </style>
 </head>
 <body>
-    <div class="contenido">
-        <h1>Bienvenido a DH Dandy Hats</h1>
-    </div>
-
     <script>
-        // Pequeño scroll inicial para ocultar la barra Safari en iOS
+        // Oculta la barra Safari al cargar en iOS
         window.addEventListener('load', () => {
             setTimeout(() => { window.scrollTo(0, 1); }, 100);
         });
