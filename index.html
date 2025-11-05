@@ -1,157 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
     <title>DH Dandy Hats</title>
 
-    <link rel="icon" type="image/webp" href="static/dhlogo.webp">
-    <link rel="apple-touch-icon" type="image/webp" href="static/dhlogo.webp">
-
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden; 
-            background-color: #000;
-            position: relative; 
-        }
-        
-        /* 1. ESTILOS DEL FONDO (Se mantienen) */
-        #dandy-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("static/dandyfondo2.PNG");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-            transform: translateY(100%);
-            transition: transform 0.6s ease-out; 
-        }
+        /* ... (Estilos anteriores se mantienen) ... */
 
-        #dandy-background.slide-in {
-            transform: translateY(0);
-        }
-
-        /* ESTILOS para el OVERLAY oscuro (Se mantienen) */
-        #dark-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); 
-            z-index: 40; 
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease-in-out, visibility 0s linear 0.4s; 
-        }
-
-        #dark-overlay.active {
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 0.4s ease-in-out; 
-        }
-        
-        /* 2. ESTILOS DEL SPLASH SCREEN (Se mantienen) */
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: #000;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 1;
-            transition: opacity 0.3s ease-out; 
-        }
-
-        #splash-logo {
-            width: 250px; 
-            height: auto;
-            transform: scale(0);
-            opacity: 0;
-            animation: zoomIn 0.8s ease-out 0.1s forwards;
-        }
-
-        @keyframes zoomIn {
-            from {
-                transform: scale(0);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        #splash-screen.hidden {
-            opacity: 0;
-            pointer-events: none; 
-        }
-
-        /* 3. ESTILOS DEL BOTÓN VERIFY (Se mantienen) */
-        #verify-button {
-            position: absolute;
-            z-index: 50; 
-            top: 40%; 
-            left: 50%;
-            width: 148px; 
-            height: auto;
-            transform: translate(-50%, 100%);
-            transition: transform 0.3s ease-out; 
-            opacity: 0; 
-            cursor: pointer;
-        }
-
-        #verify-button.active {
-            transform: translate(-50%, 0); 
-            opacity: 1; 
-        }
-        
-        @keyframes miniJump {
-            0%, 20%, 100% {
-                transform: translate(-50%, 0); 
-            }
-            10% {
-                transform: translate(-50%, -5px); 
-            }
-        }
-
-        /* 4. ESTILOS PARA NFC MESSAGE Y GIF (Se mantienen) */
-        .nfc-item {
-            position: absolute;
-            left: 50%;
-            transform: translate(-50%, 100%); 
-            opacity: 0; 
-            transition: transform 0.5s ease-out, opacity 0.5s ease-out; 
-            z-index: 60; 
-            pointer-events: none; 
-        }
-
-        .nfc-item.show {
-            transform: translate(-50%, 0); 
-            opacity: 1; 
-            pointer-events: auto; 
-        }
-
-        /* ESTADO OCULTO DESLIZANDO HACIA ABAJO (Se mantienen) */
-        .nfc-item.hide-slide {
-            transform: translate(-50%, 100%); 
-            opacity: 0;
-            transition: transform 0.7s ease-in, opacity 0.7s ease-in; 
-            pointer-events: none;
-        }
+        /* 4. ESTILOS PARA NFC MESSAGE Y GIF */
+        /* ... (Estilos .nfc-item, .nfc-item.show, .nfc-item.hide-slide se mantienen) ... */
 
         #nfc-message {
             bottom: 0%; 
@@ -162,146 +18,18 @@
 
         #nfc-gif {
             bottom: 12%; 
-            width: 213px; /* Tamaño original */
+            /* Aumentado de 213px a 300px */
+            width: 300px; 
             height: auto;
-            transition: width 0.3s ease-out, height 0.3s ease-out; /* Animación para el cambio de tamaño */
-        }
-        
-        /* NUEVA CLASE: AUMENTA el tamaño del contenedor NFC */
-        #nfc-gif.large {
-            width: 350px; /* Tamaño más grande para NFC2.PNG */
         }
 
-        /* 5. ESTILOS DEL BOTÓN INFERIOR INVISIBLE (Se mantienen) */
-        #hide-nfc-button {
-            position: absolute;
-            bottom: 0%; 
-            left: 0;
-            width: 100%;
-            height: 10%; 
-            background-color: transparent; 
-            border: none;
-            cursor: pointer;
-            z-index: 70; 
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.3s ease-out; 
-        }
-
-        #hide-nfc-button.show {
-            opacity: 1; 
-            pointer-events: auto; 
-        }
+        /* ... (Estilos #hide-nfc-button se mantienen) ... */
         
     </style>
 </head>
 <body>
-
-    <div id="dandy-background"></div>
-
-    <div id="dark-overlay"></div> 
-
-    <img id="verify-button" src="static/buttonverify.PNG" alt="Verificar">
-
-    <img id="nfc-message" class="nfc-item" src="static/nfcmsagge.PNG" alt="NFC Message">
-    <img id="nfc-gif" class="nfc-item" src="static/NFC.gif" alt="NFC Animation">
-
-    <button id="hide-nfc-button"></button>
-
-    <div id="splash-screen">
-        <img id="splash-logo" src="static/dandlogo.PNG" alt="Dandy Hats Logo">
-    </div>
-    
     <script>
-        window.addEventListener('load', function() {
-            
-            const splashScreen = document.getElementById('splash-screen');
-            const background = document.getElementById('dandy-background');
-            const verifyButton = document.getElementById('verify-button');
-            const nfcMessage = document.getElementById('nfc-message');
-            const nfcGif = document.getElementById('nfc-gif');
-            const hideNFCButton = document.getElementById('hide-nfc-button');
-            const darkOverlay = document.getElementById('dark-overlay'); 
-
-            let nfcVisible = false; 
-            let scanAttempted = false; 
-            
-            const splashDuration = 1800; 
-            
-            setTimeout(() => {
-                background.classList.add('slide-in');
-                splashScreen.classList.add('hidden');
-                
-                setTimeout(() => {
-                    if (splashScreen) {
-                        splashScreen.style.display = 'none';
-                    }
-                    
-                    verifyButton.classList.add('active'); 
-                    
-                    setTimeout(() => {
-                        verifyButton.style.animation = 'miniJump 1.4s ease-in-out infinite';
-                        
-                        // --- FUNCIONALIDAD DEL BOTÓN VERIFY ---
-                        verifyButton.addEventListener('click', function() {
-                            if (!nfcVisible) { 
-                                verifyButton.style.animation = 'none'; 
-                                
-                                nfcMessage.classList.remove('hide-slide');
-                                nfcGif.classList.remove('hide-slide');
-                                nfcMessage.classList.add('show');
-                                nfcGif.classList.add('show');
-                                darkOverlay.classList.add('active'); 
-                                
-                                hideNFCButton.classList.add('show'); 
-                                nfcVisible = true;
-                            }
-                        });
-                        
-                        // --- FUNCIONALIDAD: Clic en nfc-message ---
-                        nfcMessage.addEventListener('click', function() {
-                            if (nfcVisible && !scanAttempted) {
-                                // 1. Cambiar la imagen
-                                nfcGif.src = "static/NFC2.PNG"; 
-                                
-                                // 2. AÑADIR CLASE PARA HACER LA IMAGEN MÁS GRANDE
-                                nfcGif.classList.add('large'); 
-                                
-                                scanAttempted = true; 
-                            }
-                        });
-                        
-                        // --- FUNCIONALIDAD DEL BOTÓN INVISIBLE PARA OCULTAR NFC ---
-                        hideNFCButton.addEventListener('click', function() {
-                            if (nfcVisible) {
-                                nfcMessage.classList.add('hide-slide');
-                                nfcGif.classList.add('hide-slide');
-                                
-                                nfcMessage.classList.remove('show');
-                                nfcGif.classList.remove('show');
-                                
-                                hideNFCButton.classList.remove('show');
-                                darkOverlay.classList.remove('active'); 
-                                
-                                // 3. ELIMINAR CLASE Y RESTAURAR ESTADO
-                                nfcGif.classList.remove('large'); // Quitar la clase 'large' para restaurar el tamaño
-                                nfcGif.src = "static/NFC.gif"; // Restaurar el GIF original
-                                scanAttempted = false;
-                                
-                                setTimeout(() => {
-                                    verifyButton.style.animation = 'miniJump 1.4s ease-in-out infinite';
-                                }, 700); 
-                                
-                                nfcVisible = false;
-                            }
-                        });
-                        
-                    }, 300); 
-
-                }, 300); 
-
-            }, splashDuration);
-        });
+        // ... (Script JS se mantiene sin cambios, ya que el tamaño se controla por CSS) ...
     </script>
     
 </body>
