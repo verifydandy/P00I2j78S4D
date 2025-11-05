@@ -40,7 +40,7 @@
             transform: translateY(0);
         }
 
-        /* NUEVOS ESTILOS para el OVERLAY oscuro */
+        /* OVERLAY oscuro */
         #dark-overlay {
             position: fixed;
             top: 0;
@@ -60,7 +60,7 @@
             transition: opacity 0.4s ease-in-out; 
         }
         
-        /* 2. ESTILOS DEL SPLASH SCREEN (se mantienen) */
+        /* 2. ESTILOS DEL SPLASH SCREEN */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -100,7 +100,7 @@
             pointer-events: none; 
         }
 
-        /* 3. ESTILOS DEL BOTÓN VERIFY (se mantienen) */
+        /* 3. ESTILOS DEL BOTÓN VERIFY */
         #verify-button {
             position: absolute;
             z-index: 50; 
@@ -135,7 +135,7 @@
             transform: translate(-50%, 100%); 
             opacity: 0; 
             transition: transform 0.5s ease-out, opacity 0.5s ease-out; 
-            z-index: 60; 
+            z-index: 115; /* Importante: Debe ser mayor que slide-screen (100) y corner-gif (110) */
             pointer-events: none; 
         }
 
@@ -145,7 +145,7 @@
             pointer-events: auto; 
         }
 
-        /* ESTADO OCULTO DESLIZANDO HACIA ABAJO (se mantienen) */
+        /* ESTADO OCULTO DESLIZANDO HACIA ABAJO */
         .nfc-item.hide-slide {
             transform: translate(-50%, 100%); 
             opacity: 0;
@@ -164,16 +164,16 @@
             bottom: 12%; 
             width: 213px; 
             height: auto;
-            transition: all 0.5s ease-out; /* Para que la transición de tamaño sea suave */
+            transition: all 0.5s ease-out; 
         }
 
         /* CLASE PARA NFC2.PNG: más grande y más abajo */
         #nfc-gif.nfc-gif-grande {
-            bottom: 3%; /* Más abajo */
-            width: 370px; /* Más grande */
+            bottom: 3%; 
+            width: 370px; 
         }
 
-        /* 5. ESTILOS DEL BOTÓN INFERIOR INVISIBLE (se mantienen) */
+        /* 5. ESTILOS DEL BOTÓN INFERIOR INVISIBLE (CERRAR) */
         #hide-nfc-button {
             position: absolute;
             bottom: 0%; 
@@ -183,7 +183,7 @@
             background-color: transparent; 
             border: none;
             cursor: pointer;
-            z-index: 70; 
+            z-index: 120; /* Importante: Debe estar por encima del mensaje (115) para poder ser clickeado */
             opacity: 0; 
             pointer-events: none; 
             transition: opacity 0.3s ease-out; 
@@ -196,18 +196,14 @@
 
         /* 6. NUEVA SECCIÓN DE DESLIZAMIENTO (slide-screen) */
         #slide-screen {
-            /* Ocupa toda la pantalla, fijo */
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100vh;
-            z-index: 100; /* Por encima de todo lo demás */
+            z-index: 100; /* Debajo de los elementos NFC */
             overflow: hidden;
-
-            /* Configuración inicial: fuera de la pantalla a la derecha */
             transform: translateX(100%);
-            /* Animación de deslizamiento */
             transition: transform 0.6s ease-out;
 
             /* Estilos de fondo de la segunda pantalla */
@@ -226,8 +222,7 @@
         /* Estilos del GIF de la esquina */
         .corner-gif {
             position: fixed;
-            /* 'top' se calculará en JS */
-            top: 0; 
+            top: 0; /* Ajustado en JS */
             right: 20px;
             width: 78px;
             height: auto;
@@ -265,19 +260,18 @@
             const nfcGif = document.getElementById('nfc-gif');
             const hideNFCButton = document.getElementById('hide-nfc-button');
             const darkOverlay = document.getElementById('dark-overlay'); 
-            const slideScreen = document.getElementById('slide-screen'); // Nueva referencia
-            const cornerGif = slideScreen.querySelector('.corner-gif'); // Nueva referencia
+            const slideScreen = document.getElementById('slide-screen'); 
+            const cornerGif = slideScreen.querySelector('.corner-gif'); 
 
             let nfcVisible = false; 
             let scanAttempted = false; 
             
             const splashDuration = 1800; 
 
-            // FUNCIÓN para ajustar la posición superior del GIF de la esquina (para dispositivos iOS)
+            // FUNCIÓN para ajustar la posición superior del GIF de la esquina (para dispositivos iOS/notch)
             function adjustCornerGifTop() {
-                // Obtiene el valor de 'safe-area-inset-top' (si está disponible)
+                // Esto simula el calc(env(safe-area-inset-top, 0px) + 33px)
                 const safeAreaTop = getComputedStyle(document.documentElement).getPropertyValue('padding-top') || '0px';
-                // La suma es el valor del CSS: calc(env(safe-area-inset-top, 0px) + 33px)
                 const topValue = `calc(${safeAreaTop} + 33px)`; 
                 cornerGif.style.top = topValue;
             }
@@ -309,7 +303,7 @@
                                 nfcGif.classList.remove('hide-slide');
                                 nfcMessage.classList.add('show');
                                 nfcGif.classList.add('show');
-                                darkOverlay.classList.add('active'); // Activar el fondo oscuro
+                                darkOverlay.classList.add('active'); 
                                 
                                 hideNFCButton.classList.add('show'); 
                                 nfcVisible = true;
@@ -331,21 +325,20 @@
                                     // Iniciar el deslizamiento de la nueva pantalla desde la derecha
                                     slideScreen.classList.add('slide-in-left');
                                     
-                                    // Ocultar los elementos de la vista anterior
-                                    darkOverlay.classList.remove('active'); 
-                                    nfcMessage.classList.add('hide-slide');
-                                    nfcGif.classList.add('hide-slide');
-                                    hideNFCButton.classList.remove('show');
+                                    // Ocultamos solo el botón de Verificar
                                     verifyButton.classList.remove('active');
                                     verifyButton.style.animation = 'none';
 
-                                }, 2000); // 2000 milisegundos = 2 segundos
+                                    // IMPORTANTE: Los elementos NFC permanecen visibles (no se ocultan aquí)
+
+                                }, 2000); 
                             }
                         });
                         
-                        // --- FUNCIONALIDAD DEL BOTÓN INVISIBLE PARA OCULTAR NFC (Solo si el deslizamiento no ocurre) ---
+                        // --- FUNCIONALIDAD DEL BOTÓN INVISIBLE PARA OCULTAR NFC (CERRAR TODO) ---
                         hideNFCButton.addEventListener('click', function() {
                             if (nfcVisible) {
+                                // Ocultar los elementos NFC
                                 nfcMessage.classList.add('hide-slide');
                                 nfcGif.classList.add('hide-slide');
                                 
@@ -354,14 +347,18 @@
                                 
                                 hideNFCButton.classList.remove('show');
                                 darkOverlay.classList.remove('active'); 
+
+                                // Ocultar la pantalla de deslizamiento si está activa
+                                slideScreen.classList.remove('slide-in-left');
                                 
                                 // Restaurar el GIF original y el estado de intento
                                 nfcGif.src = "static/NFC.gif";
                                 nfcGif.classList.remove('nfc-gif-grande'); 
                                 scanAttempted = false;
                                 
-                                // Retrasa el reinicio de la animación 
+                                // Retrasa el reinicio de la animación para que reaparezca el botón "Verificar"
                                 setTimeout(() => {
+                                    verifyButton.classList.add('active'); 
                                     verifyButton.style.animation = 'miniJump 1.4s ease-in-out infinite';
                                 }, 700); 
                                 
